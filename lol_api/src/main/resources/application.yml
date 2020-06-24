@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    active: local
+  
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    default-statement-timeout: 30   
+  mapper-locations: classpath:mybatis/sql/*Mapper.xml  
+  executor-type: simple  
+
+
+  

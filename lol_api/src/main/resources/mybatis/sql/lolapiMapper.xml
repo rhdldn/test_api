@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.pact.el.weather.dao.WeatherMapper">
+	
+	<select id="selectCnncInfr" resultType="String">
+		SELECT CNNC_INFR 
+		FROM   EXTRNLAGNCY_INFR 
+		WHERE  EXTRNLAGNCY_INFR_CD = '01'
+	</select>
+	
+	<!-- LOCK 취득 -->
+	<select id="selectLock" resultType="boolean">
+		SELECT PG_TRY_ADVISORY_LOCK(#{lockId});
+		
+	</select>
+	
+	<!-- UNLOCK -->
+	<select id="excuteUnLock" resultType="boolean">
+		SELECT PG_ADVISORY_UNLOCK(#{lockId});
+		
+	</select>
+	
+</mapper>

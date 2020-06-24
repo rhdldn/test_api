@@ -1,0 +1,37 @@
+logging:
+  config: classpath:logback/logback-production.xml
+
+spring:
+  datasource:
+   type: org.apache.tomcat.jdbc.pool.DataSource
+   driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+   url: jdbc:log4jdbc:postgresql://172.21.110.15:5432/oprdb
+   username: portal_user
+   password: 12Portalu!@
+   dbcp2:
+     minIdle : 1  
+     maxIdle: 2
+     maxActive: 2
+     test-on-borrow: true
+     validation-query: SELECT NOW();  
+  devtools: 
+   livereload: 
+    enable: true
+  freemarker:
+   cache: false
+  
+iot:
+  serverIp: 172.21.100.3
+  serverPort: 10042
+  externalSysId: OPEN_TCP
+  deviceId: WEATHER
+  password: weather1234!
+  helathCheckuseYn: false
+
+weather:
+#  api_key: HhpkLRVEoyTgB%2F5UIy3DpvpcHQ1Tvr2v4FC2aIQGPO4eEmZFB6KM8ryw9fTKwXKaQ9drLgm6KUIHbYzD6Z%2B0Lw%3D%3D
+  pos_x: 62
+  pos_y: 123
+  
+server:
+  port: 10044
