@@ -27,7 +27,10 @@ public class LolSpringBootApplication extends SpringBootServletInitializer imple
 	
 	public static void main(String[] args) {
 		
-		new SpringApplicationBuilder(LolSpringBootApplication.class).run(args);		
+		new SpringApplicationBuilder(LolSpringBootApplication.class).properties(
+                "spring.config.location=" +
+                        "file:/home/sindorims/lol-api/application-local.yml"
+        ).run(args);		
 	}
 
 	@Override
