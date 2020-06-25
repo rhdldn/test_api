@@ -82,8 +82,10 @@ public class LolApiService {
 	 */
 	public void modifyApiKey(String apiKey){
 		
-		int updCnt = lolApiMapper.updateApiKey(apiKey);
-		log.info("갱신 횟수 : {}", updCnt);
+		if(apiKey != null && !apiKey.equals("")){
+			int updCnt = lolApiMapper.updateApiKey(apiKey);
+			log.info("갱신 횟수 : {}", updCnt);
+		}
 	}
 	
 	
