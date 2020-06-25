@@ -9,7 +9,8 @@
 	
 	<update id="updateApiKey">
 		UPDATE L_APIKEY 
-		SET api_key = #{apiKey}		
+		SET api_key = #{apiKey},
+		    reg_date = now()		
 	</update>
 	
 </mapper>
