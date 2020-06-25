@@ -34,13 +34,10 @@ import lombok.extern.slf4j.Slf4j;
 public class LolApiService {
 	
 	@Autowired
-	LolApiMapper weatherMapper;
+	LolApiMapper lolApiMapper;
 
 	private static final String serviceUrl = "https://kr.api.riotgames.com/";
 
-	@Value("${apikey}")
-	private String apikey;
-	
 	private static final String champJsonUrl = "http://ddragon.leagueoflegends.com/cdn/10.12.1/data/en_US/champion.json";
 			
 	private static final String[] ponyIdAry = {"김지둔", "고이우", "삶은인과응보", "여무라", "헤이컴온요", "수쥐니아"};
@@ -70,6 +67,10 @@ public class LolApiService {
 	 * @throws Exception 
 	 */
 	public List<Map<String, Object>> getChampList(Map<String, Object> param) throws Exception {
+		
+		String apiKey = lolApiMapper.selectApiKey();
+		param.put("apikey", apiKey);
+		
 		ResponseEntity<String> lvlChampRsp = getLvlChampList(param);
 		return parsingLvlChampInfo(lvlChampRsp.getBody());
 	}
@@ -99,6 +100,8 @@ public class LolApiService {
 				String ponyId = ary[i];
 				log.debug("ponyId : {}", ponyId);
 				
+				String apiKey = lolApiMapper.selectApiKey();
+				parameters.put("apikey", apiKey);
 				ResponseEntity<String> userRsp = getLolUserInfo(ponyId, parameters);
 			
 				if(userRsp != null){
@@ -194,6 +197,8 @@ public class LolApiService {
 		
 		try {
 			
+			String apiKey = lolApiMapper.selectApiKey();
+			parameters.put("apikey", apiKey);
 			ResponseEntity<String> matchRsp = getMatchInfo(accountId, parameters);
 				
 			if(matchRsp != null){
@@ -340,7 +345,7 @@ public class LolApiService {
 	 */
 	public ResponseEntity<String> getLvlChampList(Map<String, Object> parameters) throws Exception {
 		String apiUrl = "lol/champion-mastery/v4/champion-masteries/by-summoner/" + MapUtils.getString(parameters, "summId", "");
-		return sendRest(serviceUrl, apiUrl+"?api_key="+apikey, parameters);
+		return sendRest(serviceUrl, apiUrl+"?api_key="+MapUtils.getString(parameters, "apikey", ""), parameters);
 	}
 	
 	/**
@@ -359,7 +364,7 @@ public class LolApiService {
 	 */
 	public ResponseEntity<String> getMatchInfo(String accountId, Map<String, Object> parameters) throws Exception {
 		String apiUrl = "lol/match/v4/matchlists/by-account/" + accountId;
-		return sendRestMatch(serviceUrl, apiUrl+"?api_key="+apikey, parameters);
+		return sendRestMatch(serviceUrl, apiUrl+"?api_key="+MapUtils.getString(parameters, "apikey", ""), parameters);
 	}
 	
 	/**
@@ -378,7 +383,7 @@ public class LolApiService {
 	 */
 	public ResponseEntity<String> getLolUserInfo(String summNm, Map<String, Object> parameters) throws Exception {
 		String apiUrl = "/lol/summoner/v4/summoners/by-name/" + summNm;
-		return sendRest(serviceUrl, apiUrl+"?api_key="+apikey, parameters);
+		return sendRest(serviceUrl, apiUrl+"?api_key="+MapUtils.getString(parameters, "apikey", ""), parameters);
 	}
 	
 	/**
@@ -388,7 +393,7 @@ public class LolApiService {
 	 */
 	public ResponseEntity<String> getLolUserRank(String encSummId, Map<String, Object> parameters) throws Exception {
 		String apiUrl = "lol/league/v4/entries/by-summoner/" + encSummId;
-		return sendRest(serviceUrl, apiUrl+"?api_key="+apikey, parameters);
+		return sendRest(serviceUrl, apiUrl+"?api_key="+MapUtils.getString(parameters, "apikey", ""), parameters);
 	}
 	
 	/**
