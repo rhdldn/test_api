@@ -76,6 +76,18 @@ public class LolApiService {
 	}
 	
 	/**
+	 * API KEY 갱신
+	 * @param parameters2 
+	 * @throws Exception 
+	 */
+	public void modifyApiKey(String apiKey){
+		
+		int updCnt = lolApiMapper.updateApiKey(apiKey);
+		log.info("갱신 횟수 : {}", updCnt);
+	}
+	
+	
+	/**
 	 * 포니 랭크 정보 조회
 	 * @param parameters2 
 	 * @throws Exception 

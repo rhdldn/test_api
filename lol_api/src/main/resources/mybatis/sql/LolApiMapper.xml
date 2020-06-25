@@ -7,4 +7,9 @@
 		FROM L_APIKEY 		
 	</select>
 	
+	<update id="updateApiKey">
+		UPDATE L_APIKEY 
+		SET api_key = #{apiKey}		
+	</update>
+	
 </mapper>

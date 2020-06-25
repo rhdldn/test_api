@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 public interface LolApiMapper {
 
 	public String selectApiKey();
+	
+	public int updateApiKey(@Param("apiKey") String apiKey);
 }

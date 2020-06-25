@@ -95,25 +95,22 @@ public class LolApiController {
 	}
 	
 	/**
-	 * 대기오염 정보 조회
+	 * API KEY 갱신
 	 * @param paramMap
 	 * @return
 	 * @throws Exception 
 	 * @throws IOException 
 	 * @throws NotSupportedDataType 
 	 */
-	@RequestMapping(value = "/updWeather", method = RequestMethod.GET)
-	public ResponseEntity<String> weatherInfo() throws Exception{
+	@RequestMapping(value = "/updApiKey", method = RequestMethod.GET)
+	public ResponseEntity<String> updApiKey(@RequestParam("apiKey") String apiKey) throws Exception{
 
 		HttpHeaders responseHeaders = new HttpHeaders();
 
 		responseHeaders.add("Content-Type", "text/html; charset=UTF-8");
 		
-		//ResponseEntity<String> retStr = lolApiService.sendRest("", null);
-		String retStr = "";
+		lolApiService.modifyApiKey(apiKey);
 		
-		//String retStr = weatherInfoMngService.createWeatherInfo();
-		
-		return new ResponseEntity<>(retStr, responseHeaders, HttpStatus.OK);
+		return new ResponseEntity<>("", responseHeaders, HttpStatus.OK);
 	}
 }
