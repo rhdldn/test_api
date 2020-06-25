@@ -16,11 +16,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan(basePackages= {"com.jhkim.lolapi"})
 @EnableTransactionManagement(proxyTargetClass = true)
 public class DataSourceConfig {
-
-	 public static final String PORTAL_DATASOURCE = "portalDS";
-	 
-	 public static final String GIS_DATASOURCE = "gisDS";
-	 
 	 
 	 @Value("${spring.datasource.driverClassName}")
 	 private String className;
