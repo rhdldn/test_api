@@ -29,7 +29,7 @@ public class LolSpringBootApplication extends SpringBootServletInitializer imple
 		
 		new SpringApplicationBuilder(LolSpringBootApplication.class).properties(
                 "spring.config.location=" +
-                        "file:/home/sindorims/lol-api/application-local.yml"
+                        "file:/home/rhdldn/lol-api/application-local.yml"
         ).run(args);		
 	}
 
