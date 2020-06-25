@@ -281,7 +281,7 @@ public class LolApiService {
 				ResponseEntity<String> matchDtlRsp = getMatchDetailInfo(Long.toString(gameId), parameters);
 				Map<String, Object> matchDetailMap = parsingMatchDetail(matchDtlRsp.getBody(), accountId);
 				
-				matchMap.put("matchDetailMap", matchDetailMap);
+				matchMap.put("matchDtlMap", matchDetailMap);
 				
 				retList.add(matchMap);
 			}
