@@ -85,11 +85,12 @@
                 <c:forEach var="matchList" varStatus="status" items="${list.lastGameList}">
                 	<div style="width:25%; float:left;">
                 		<img class="card-img-top" src="https://ddragon.leagueoflegends.com/cdn/10.6.1/img/champion/${matchList.champNm}.png" alt="">
-		                <img class="card-img-top" src="/resources/img/${matchList.positionImg}.png" alt="">
 		                <c:if test="${matchList.matchDtlMap.winflag eq 'true'}">
+		                	<img class="card-img-top" style="background-color: #007bff26;" src="/resources/img/${matchList.positionImg}.png" alt="">
 		                	<div style="font-weight: 800; background-color: #007bff26; text-align: center;">${matchList.matchDtlMap.kills}/${matchList.matchDtlMap.deaths}/${matchList.matchDtlMap.assists}</div>
 		                </c:if>
 		                <c:if test="${matchList.matchDtlMap.winflag eq 'false'}">
+		                	<img class="card-img-top" style="background-color: #ff000012;" src="/resources/img/${matchList.positionImg}.png" alt="">
 		                	<div style="font-weight: 800; background-color: #ff000012; text-align: center;">${matchList.matchDtlMap.kills}/${matchList.matchDtlMap.deaths}/${matchList.matchDtlMap.assists}</div>
 		                </c:if>
         	        </div>
