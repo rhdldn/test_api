@@ -58,7 +58,7 @@
       </div> -->
       <!-- /.col-lg-3 -->
 
-      <div class="col-lg-9">
+      <div class="col-lg-9" style="flex:0 0 90%">
 
         <div class="row" style="flex-wrap:inherit;">
 		
@@ -70,12 +70,12 @@
                 </h4>
               <div class="card-body">
                 <h5>솔로랭크</h5>
-                <a href="#"><img class="card-img-top" style="height:20%;" src="/resources/img/${list.soloRkImg}.png" alt=""></a>
+                <a href="#"><img class="card-img-top" style="height:17%;" src="/resources/img/${list.soloRkImg}.png" alt=""></a>
                 <h5>${ list.soloRkTier } ${ list.soloRkRank } ${ list.soloRkPt }P</h5>
                 <h3>${ list.soloRkWins }승 ${ list.soloRkLosses }패</h3>
                 <br/>
                 <h5>자유랭크</h5>
-                <a href="#"><img class="card-img-top" style="height:20%;" src="/resources/img/${list.freeRkImg}.png" alt=""></a>
+                <a href="#"><img class="card-img-top" style="height:17%;" src="/resources/img/${list.freeRkImg}.png" alt=""></a>
                 <h5>${ list.freeRkTier } ${ list.freeRkRank } ${ list.freeRkPt }P</h5>
                 <h3>${ list.freeRkWins }승 ${ list.freeRkLosses }패</h3>
                 
@@ -83,10 +83,15 @@
                 <h3 style="font-size: 1.00rem;">최근 10게임 선호 라인</h3>
                 <div style="width:100%;">
                 <c:forEach var="matchList" varStatus="status" items="${list.lastGameList}">
-                	<div style="width:20%; float:left;">
+                	<div style="width:25%; float:left;">
                 		<img class="card-img-top" src="https://ddragon.leagueoflegends.com/cdn/10.6.1/img/champion/${matchList.champNm}.png" alt="">
 		                <img class="card-img-top" src="/resources/img/${matchList.positionImg}.png" alt="">
-		                <div>${matchList.matchDtlMap.kills} / ${matchList.matchDtlMap.deaths} / ${matchList.matchDtlMap.assists}</div>
+		                <c:if test="${matchList.matchDtlMap.winflag eq 'true'}">
+		                	<div style="font-weight: 800; background-color: #007bff26; text-align: center;">${matchList.matchDtlMap.kills}/${matchList.matchDtlMap.deaths}/${matchList.matchDtlMap.assists}</div>
+		                </c:if>
+		                <c:if test="${matchList.matchDtlMap.winflag eq 'false'}">
+		                	<div style="font-weight: 800; background-color: #ff000012; text-align: center;">${matchList.matchDtlMap.kills}/${matchList.matchDtlMap.deaths}/${matchList.matchDtlMap.assists}</div>
+		                </c:if>
         	        </div>
                 </c:forEach>
                 </div>

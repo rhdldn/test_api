@@ -554,7 +554,7 @@ public class LolApiService {
 			
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(restUrl + url)
 			        .queryParam("beginIndex", 0)
-			        .queryParam("endIndex", 10);
+			        .queryParam("endIndex", 8);
 			
 			HttpEntity<Map<String, Object>> request = new HttpEntity<>(parameters, headers);
 			ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, request, String.class);
