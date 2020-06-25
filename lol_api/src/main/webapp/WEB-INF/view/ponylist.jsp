@@ -86,6 +86,7 @@
                 	<div style="width:20%; float:left;">
                 		<img class="card-img-top" src="https://ddragon.leagueoflegends.com/cdn/10.6.1/img/champion/${matchList.champNm}.png" alt="">
 		                <img class="card-img-top" src="/resources/img/${matchList.positionImg}.png" alt="">
+		                <div>${matchList.matchDtlMap.kills} / ${matchList.matchDtlMap.deaths} / ${matchList.matchDtlMap.assists}</div>
         	        </div>
                 </c:forEach>
                 </div>

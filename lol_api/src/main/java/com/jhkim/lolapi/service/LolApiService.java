@@ -218,7 +218,7 @@ public class LolApiService {
 			if(matchRsp != null){
 						
 				//매치정보 재파싱
-				retList = parsingMatchInfo(matchRsp.getBody());
+				retList = parsingMatchInfo(matchRsp.getBody(), accountId, parameters);
 			}
 			return retList;
 		} catch (Exception e) {
@@ -235,8 +235,9 @@ public class LolApiService {
 	* <PRE>
 	* @param body
 	* @return
+	 * @throws Exception 
 	 */
-	private List<Object> parsingMatchInfo(String body) {
+	private List<Object> parsingMatchInfo(String body, String accountId, Map<String, Object> parameters) throws Exception {
 		
 		List<Object> retList = new ArrayList<Object>();
 		Gson gson = new Gson();
@@ -253,6 +254,7 @@ public class LolApiService {
 				String champion = Integer.toString(MapUtils.getInteger(map, "champion", 0));
 				String role = MapUtils.getString(map, "role", "");
 				String lane = MapUtils.getString(map, "lane", "");
+				long gameId = MapUtils.getLongValue(map, "gameId", 0);
 				String positionImg = "support";
 				
 				if(role.equals("DUO_SUPPORT")){
@@ -274,10 +276,70 @@ public class LolApiService {
 				}
 				matchMap.put("champNm", getChampMap(champion));
 				matchMap.put("positionImg", positionImg);
+				
+				//매치에 대한 KDA, 결과 조회
+				ResponseEntity<String> matchDtlRsp = getMatchDetailInfo(Long.toString(gameId), parameters);
+				Map<String, Object> matchDetailMap = parsingMatchDetail(matchDtlRsp.getBody(), accountId);
+				
+				matchMap.put("matchDetailMap", matchDetailMap);
+				
 				retList.add(matchMap);
 			}
 		}
 		return retList;
+	}
+	
+	/**
+	 * 
+	* <PRE>
+	* 간략 : 매치 상세 정보 파싱.
+	* 상세 : .
+	* <PRE>
+	* @param body
+	* @return
+	 */
+	private Map<String, Object> parsingMatchDetail(String body, String paramAccountId) {
+		
+		Map<String, Object> matchDtlMap = new HashMap();
+		Gson gson = new Gson();
+		
+		Map<String, Object> retMap = gson.fromJson(body, Map.class);
+		List<Map<String, Object>> matchUserList = new ArrayList<>();
+		
+		if(retMap.get("participantIdentities") != null){
+			matchUserList = (List<Map<String, Object>>) retMap.get("participantIdentities");
+		}
+		String participantId = "";
+		for (Map<String, Object> map : matchUserList) {
+				
+			Map<String, Object> userMap = (Map<String, Object>) map.get("player");
+			
+			String userAccountId = MapUtils.getString(userMap, "accountId", "");
+			if(paramAccountId.equals(userAccountId)){
+				participantId = MapUtils.getString(map, "participantId", "");
+			}
+		}
+		
+		List<Map<String, Object>> matchUserDtlList = new ArrayList<>();
+		if(retMap.get("participants") != null){
+			matchUserDtlList = (List<Map<String, Object>>) retMap.get("participants");
+		}
+		
+		for (Map<String, Object> map : matchUserDtlList) {
+			
+			String igParticipantId = MapUtils.getString(map, "participantId", "");
+			if(participantId.equals(igParticipantId)){
+				
+				Map<String, Object> matchUserSts = (Map<String, Object>) map.get("stats");
+				
+				//KDA, 승패여부
+				matchDtlMap.put("kills", MapUtils.getInteger(matchUserSts, "kills", 0));
+				matchDtlMap.put("deaths", MapUtils.getInteger(matchUserSts, "deaths", 0));
+				matchDtlMap.put("assists", MapUtils.getInteger(matchUserSts, "assists", 0));
+				matchDtlMap.put("winflag", MapUtils.getString(matchUserSts, "win", ""));
+			}
+		}
+		return matchDtlMap;
 	}
 	
 	/**
@@ -379,6 +441,16 @@ public class LolApiService {
 	public ResponseEntity<String> getMatchInfo(String accountId, Map<String, Object> parameters) throws Exception {
 		String apiUrl = "lol/match/v4/matchlists/by-account/" + accountId;
 		return sendRestMatch(serviceUrl, apiUrl+"?api_key="+MapUtils.getString(parameters, "apikey", ""), parameters);
+	}
+	
+	/**
+	 * 매치 상세 정보 조회
+	 * @param parameters2 
+	 * @throws Exception 
+	 */
+	public ResponseEntity<String> getMatchDetailInfo(String matchId, Map<String, Object> parameters) throws Exception {
+		String apiUrl = "lol/match/v4/matches/" + matchId;
+		return sendRest(serviceUrl, apiUrl+"?api_key="+MapUtils.getString(parameters, "apikey", ""), parameters);
 	}
 	
 	/**
