@@ -69,29 +69,40 @@
                   <a href="javascript:champClick('${list.summId}');" style="font-size: 1.75rem;">${ list.nm }</a>
                 </h4>
               <div class="card-body">
-                <h5>솔로랭크</h5>
-                <a href="#"><img class="card-img-top" style="height:17%;" src="/resources/img/${list.soloRkImg}.png" alt=""></a>
-                <h5>${ list.soloRkTier } ${ list.soloRkRank } ${ list.soloRkPt }P</h5>
-                <h3>${ list.soloRkWins }승 ${ list.soloRkLosses }패</h3>
+              	<div style="display: flex; text-align: center;"> 
+                <div style="font-size: 18px; font-weight: 900; width: 100%">솔로랭크</div>
+                <div style="font-size: 18px; font-weight: 900; width: 100%">자유랭크</div>
+                </div>
+                <div style="display: flex;">
+                <a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.soloRkImg}.png" alt=""></a>
+                <a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.freeRkImg}.png" alt=""></a>
+                </div>
+                <div style="display: flex; font-size: 19px; font-weight:800; text-align: center;">
+                <div style="width: 100%">${ list.soloRkTier } ${ list.soloRkRank }</div>
+                <div style="width: 100%">${ list.freeRkTier } ${ list.freeRkRank }</div>
+                </div>
+                <div style="display: flex; font-size: 30px; font-weight:800; text-align: center;">
+                <div style="width: 100%">${ list.soloRkPt }P</div>
+                <div style="width: 100%">${ list.freeRkPt }P</div>
+                </div>
                 <br/>
-                <h5>자유랭크</h5>
-                <a href="#"><img class="card-img-top" style="height:17%;" src="/resources/img/${list.freeRkImg}.png" alt=""></a>
-                <h5>${ list.freeRkTier } ${ list.freeRkRank } ${ list.freeRkPt }P</h5>
-                <h3>${ list.freeRkWins }승 ${ list.freeRkLosses }패</h3>
-                
+                <div style="display: flex; font-size: 17px; font-weight:700; text-align: center;">
+                	<div style="width: 100%">${ list.soloRkWins }승 ${ list.soloRkLosses }패</div>
+                	<div style="width: 100%">${ list.freeRkWins }승 ${ list.freeRkLosses }패</div>
+                </div>
                 <br/>
-                <h3 style="font-size: 1.00rem;">최근 10게임 선호 라인</h3>
+                <h3 style="font-size: 17px; font-weight: 600;">최근 10게임 선호 라인</h3>
                 <div style="width:100%;">
                 <c:forEach var="matchList" varStatus="status" items="${list.lastGameList}">
                 	<div style="width:25%; float:left;">
                 		<img class="card-img-top" src="https://ddragon.leagueoflegends.com/cdn/10.6.1/img/champion/${matchList.champNm}.png" alt="">
 		                <c:if test="${matchList.matchDtlMap.winflag eq 'true'}">
 		                	<img class="card-img-top" style="background-color: #007bff26;" src="/resources/img/${matchList.positionImg}.png" alt="">
-		                	<div style="font-weight: 800; background-color: #007bff26; text-align: center;">${matchList.matchDtlMap.kills}/${matchList.matchDtlMap.deaths}/${matchList.matchDtlMap.assists}</div>
+		                	<div style="font-weight: 800; font-size:12px; background-color: #007bff26; text-align: center;">${matchList.matchDtlMap.kills}/${matchList.matchDtlMap.deaths}/${matchList.matchDtlMap.assists}</div>
 		                </c:if>
 		                <c:if test="${matchList.matchDtlMap.winflag eq 'false'}">
 		                	<img class="card-img-top" style="background-color: #ff000012;" src="/resources/img/${matchList.positionImg}.png" alt="">
-		                	<div style="font-weight: 800; background-color: #ff000012; text-align: center;">${matchList.matchDtlMap.kills}/${matchList.matchDtlMap.deaths}/${matchList.matchDtlMap.assists}</div>
+		                	<div style="font-weight: 800; font-size:12px; background-color: #ff000012; text-align: center;">${matchList.matchDtlMap.kills}/${matchList.matchDtlMap.deaths}/${matchList.matchDtlMap.assists}</div>
 		                </c:if>
         	        </div>
                 </c:forEach>
