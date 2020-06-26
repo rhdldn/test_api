@@ -24,6 +24,7 @@ public class LolSpringBootApplication extends SpringBootServletInitializer imple
 	  protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 	    return builder.sources(LolSpringBootApplication.class);
 	  }
+
 	
 	public static void main(String[] args) {
 		
