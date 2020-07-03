@@ -7,6 +7,221 @@
 		FROM L_APIKEY 		
 	</select>
 	
+	<select id="selectUserList" resultType="hashMap">
+		SELECT USER_GAME_ID
+			 , USER_TYPE
+			 , GAME_LVL
+			 , EUC_ID
+			 , ACCOUNT_ID
+			 , PUUID
+			 , REG_DATE
+			 , UPD_DATE 
+		FROM L_USER 
+		WHERE 1=1
+		
+		<if test="userType != null and userType != ''">
+		AND USER_TYPE = #{userType}
+		</if>
+		
+		<if test="userId != null and userId != ''">
+		AND USER_GAME_ID = #{userId}
+		</if>
+			
+	</select>
+	
+	<select id="selectUserInfo" resultType="Map">
+		SELECT USER_GAME_ID
+			 , USER_TYPE
+			 , GAME_LVL
+			 , EUC_ID
+			 , ACCOUNT_ID
+			 , PUUID
+			 , REG_DATE
+			 , UPD_DATE 
+		FROM L_USER 
+		WHERE USER_GAME_ID = #{userId}		
+	</select>
+	
+	<select id="selectRankInfo" resultType="Map">
+		SELECT USER_GAME_ID
+			 , QUE_TYPE
+			 , TIER
+			 , LOWER(TIER) AS TIER_IMG
+			 , RANK_LVL
+			 , LEAGUE_PT
+			 , WINS_CNT
+			 , LOSSES_CNT
+			 , REG_DATE
+			 , UPD_DATE
+		FROM L_USER_RANK
+		WHERE QUE_TYPE = #{queueType}
+		AND   USER_GAME_ID = #{userGameId}
+	</select>
+	
+	<select id="selectMatchList" resultType="Map">
+		SELECT USER_GAME_ID
+			 ,GAME_MATCH_ID
+			 , CHAMPION_ID
+			 , CHAMPION_ENG_NAME 
+			 , CHAMPION_KOR_NAME 
+			 , QUE_TYPE
+			 , SEASON
+			 , GAME_DATE
+			 , GAME_ROLE
+			 , LANE
+			 , CASE WHEN GAME_ROLE_PARSE = 'support' THEN GAME_ROLE_PARSE ELSE LANE_PARSE END AS POSITION_IMG
+			 , REG_DATE
+			 , UPD_DATE
+		FROM (
+		SELECT A.USER_GAME_ID
+			 , A.GAME_MATCH_ID
+			 , A.CHAMPION_ID
+			 , B.CHAMPION_ENG_NAME 
+			 , B.CHAMPION_KOR_NAME 
+			 , A.QUE_TYPE
+			 , A.SEASON
+			 , A.GAME_DATE
+			 , A.GAME_ROLE
+			 , A.LANE
+			 , IF(A.GAME_ROLE = 'DUO_SUPPORT', 'support', 'support') as GAME_ROLE_PARSE
+			 , CASE WHEN A.LANE = 'BOTTOM' THEN 'AD' WHEN A.LANE = 'TOP' THEN 'top' WHEN A.LANE = 'JUNGLE' THEN 'jg' WHEN A.LANE = 'MID' THEN 'mid' ELSE '' END AS LANE_PARSE
+			 , A.REG_DATE
+			 , A.UPD_DATE
+		FROM L_USER_MATCH A, L_CHAMPION B
+		WHERE A.CHAMPION_ID = B.CHAMPION_ID
+		AND A.USER_GAME_ID = #{userGameId}
+		ORDER BY A.REG_DATE DESC
+		LIMIT 8) A
+	</select>
+	
+	<update id="insertUserInfo">
+		INSERT INTO L_USER
+		(
+					USER_GAME_ID
+				   ,USER_TYPE
+				   ,GAME_LVL
+				   ,EUC_ID
+				   ,ACCOUNT_ID
+				   ,PUUID
+				   ,REG_DATE
+				   ,UPD_DATE
+		)
+		VALUES
+		(	
+				    #{userId}
+				   ,#{userType}
+				   ,#{summonerLevel}
+				   ,#{id}
+				   ,#{accountId}
+				   ,#{puuid}
+				   ,NOW()
+				   ,NOW()
+		)
+		
+	</update>
+	
+	<update id="updateUserInfo">
+		UPDATE L_USER
+		SET GAME_LVL = #{summonerLevel}
+		  , EUC_ID = #{id}
+		  , ACCOUNT_ID = #{accountId}
+		  , PUUID = #{puuid}
+		  , UPD_DATE = NOW()
+		WHERE USER_GAME_ID = #{userId}
+	</update>
+
+	<update id="insertUserRank">
+		INSERT INTO L_USER_RANK
+		(
+					USER_GAME_ID
+			 	  , QUE_TYPE
+			 	  , TIER
+			 	  , RANK_LVL
+			 	  , LEAGUE_PT
+			 	  , WINS_CNT
+			 	  , LOSSES_CNT
+			 	  , REG_DATE
+			 	  , UPD_DATE
+		)
+		VALUES
+		(	
+				    #{summonerName}
+				   ,#{queueType}
+				   ,#{tier}
+				   ,#{rank}
+				   ,#{leaguePoints}
+				   ,#{wins}
+				   ,#{losses}
+				   ,NOW()
+				   ,NOW()
+		)
+	</update>
+	
+	<update id="updateUserRank">
+		UPDATE L_USER_RANK
+		SET TIER = #{tier}
+		  , RANK_LVL = #{rank}
+		  , LEAGUE_PT = #{leaguePoints}
+		  , WINS_CNT = #{wins}
+		  , LOSSES_CNT = #{losses}
+ 		  , UPD_DATE = NOW()
+		WHERE USER_GAME_ID = #{summonerName}
+		AND QUE_TYPE = #{queueType}
+	</update>	
+	
+	<update id="insertUserMatch">
+		INSERT INTO L_USER_MATCH
+		(
+					USER_GAME_ID
+				  , GAME_MATCH_ID
+				  , CHAMPION_ID
+				  , QUE_TYPE
+				  , SEASON
+				  , GAME_DATE
+				  , GAME_ROLE
+				  , LANE
+				  , REG_DATE
+				  , UPD_DATE
+		)
+		VALUES
+		(	
+				    #{userId}
+				   ,#{gameId}
+				   ,#{champion}
+				   ,#{queue}
+				   ,#{season}
+				   ,FROM_UNIXTIME(#{timestamp}/1000, '%Y-%c-%d %H:%i:%s')
+				   ,#{role}
+				   ,#{lane}
+				   ,NOW()
+				   ,NOW()
+		)
+	</update>
+	
+	<update id="updateUserMatch">
+		UPDATE L_USER_MATCH
+		SET CHAMPION_ID = #{champion}
+		  , QUE_TYPE = #{queue}
+		  , SEASON = #{season}
+		  , GAME_DATE = FROM_UNIXTIME(#{timestamp}/1000, '%Y-%c-%d %H:%i:%s')
+		  , GAME_ROLE = #{role}
+		  , LANE = #{lane}
+ 		  , UPD_DATE = NOW()
+		WHERE USER_GAME_ID = #{userId}
+		AND GAME_MATCH_ID = #{gameId}
+	</update>
+
+	<update id="updateUserMatchDtl">
+		UPDATE L_USER_MATCH
+		SET KILLS = #{kills}
+		  ,	DEATHS = #{deaths}
+		  ,	ASSISTS = #{assists}
+		  ,	WIN_FLAG = #{winflag}
+ 		  , UPD_DATE = NOW()
+		WHERE USER_GAME_ID = #{userId}
+		AND GAME_MATCH_ID = #{gameId}
+	</update>	
+	
 	<update id="updateApiKey">
 		UPDATE L_APIKEY 
 		SET api_key = #{apiKey},

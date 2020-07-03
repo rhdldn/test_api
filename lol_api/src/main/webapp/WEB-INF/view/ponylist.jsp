@@ -66,7 +66,7 @@
           <div class="col-lg-4 col-md-6 mb-4" style="margin-top: 1.5rem!important;">
             <div class="card h-100">
             	<h4 class="card-title">
-                  <a href="javascript:champClick('${list.summId}');" style="font-size: 1.75rem;">${ list.nm }</a>
+                  <a href="javascript:champClick('${list.soloRankMap.summId}');" style="font-size: 1.75rem;">${list.soloRankMap.USER_GAME_ID}</a>
                 </h4>
               <div class="card-body">
               	<div style="display: flex; text-align: center;"> 
@@ -74,35 +74,35 @@
                 <div style="font-size: 18px; font-weight: 900; width: 100%">자유랭크</div>
                 </div>
                 <div style="display: flex;">
-                <a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.soloRkImg}.png" alt=""></a>
-                <a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.freeRkImg}.png" alt=""></a>
+                <a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.soloRankMap.TIER_IMG}.png" alt=""></a>
+                <a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.freeRankMap.TIER_IMG}.png" alt=""></a>
                 </div>
                 <div style="display: flex; font-size: 19px; font-weight:800; text-align: center;">
-                <div style="width: 100%">${ list.soloRkTier } ${ list.soloRkRank }</div>
-                <div style="width: 100%">${ list.freeRkTier } ${ list.freeRkRank }</div>
+                <div style="width: 100%">${list.soloRankMap.TIER } ${list.soloRankMap.RANK_LVL }</div>
+                <div style="width: 100%">${list.freeRankMap.TIER } ${list.freeRankMap.RANK_LVL }</div>
                 </div>
                 <div style="display: flex; font-size: 30px; font-weight:800; text-align: center;">
-                <div style="width: 100%">${ list.soloRkPt }P</div>
-                <div style="width: 100%">${ list.freeRkPt }P</div>
+                <div style="width: 100%">${list.soloRankMap.LEAGUE_PT }P</div>
+                <div style="width: 100%">${list.freeRankMap.LEAGUE_PT }P</div>
                 </div>
                 <br/>
                 <div style="display: flex; font-size: 17px; font-weight:700; text-align: center;">
-                	<div style="width: 100%">${ list.soloRkWins }승 ${ list.soloRkLosses }패</div>
-                	<div style="width: 100%">${ list.freeRkWins }승 ${ list.freeRkLosses }패</div>
+                	<div style="width: 100%">${list.soloRankMap.WINS_CNT }승 ${list.soloRankMap.LOSSES_CNT }패</div>
+                	<div style="width: 100%">${list.freeRankMap.WINS_CNT }승 ${list.freeRankMap.LOSSES_CNT }패</div>
                 </div>
                 <br/>
                 <h3 style="font-size: 17px; font-weight: 600;">최근 10게임 선호 라인</h3>
                 <div style="width:100%;">
                 <c:forEach var="matchList" varStatus="status" items="${list.lastGameList}">
                 	<div style="width:25%; float:left;">
-                		<img class="card-img-top" src="https://ddragon.leagueoflegends.com/cdn/10.6.1/img/champion/${matchList.champNm}.png" alt="">
-		                <c:if test="${matchList.matchDtlMap.winflag eq 'true'}">
-		                	<img class="card-img-top" style="background-color: #007bff26;" src="/resources/img/${matchList.positionImg}.png" alt="">
-		                	<div style="font-weight: 800; font-size:12px; background-color: #007bff26; text-align: center;">${matchList.matchDtlMap.kills}/${matchList.matchDtlMap.deaths}/${matchList.matchDtlMap.assists}</div>
+                		<img class="card-img-top" src="https://ddragon.leagueoflegends.com/cdn/10.6.1/img/champion/${matchList.CHAMPION_ENG_NAME}.png" alt="">
+		                <c:if test="${matchList.WIN_FLAG eq 'true'}">
+		                	<img class="card-img-top" style="background-color: #007bff26;" src="/resources/img/${matchList.POSITION_IMG}.png" alt="">
+		                	<div style="font-weight: 800; font-size:12px; background-color: #007bff26; text-align: center;">${matchList.KILLS}/${matchList.DEATHS}/${matchList.ASSISTS}</div>
 		                </c:if>
-		                <c:if test="${matchList.matchDtlMap.winflag eq 'false'}">
-		                	<img class="card-img-top" style="background-color: #ff000012;" src="/resources/img/${matchList.positionImg}.png" alt="">
-		                	<div style="font-weight: 800; font-size:12px; background-color: #ff000012; text-align: center;">${matchList.matchDtlMap.kills}/${matchList.matchDtlMap.deaths}/${matchList.matchDtlMap.assists}</div>
+		                <c:if test="${matchList.WIN_FLAG eq 'false'}">
+		                	<img class="card-img-top" style="background-color: #ff000012;" src="/resources/img/${matchList.POSITION_IMG}.png" alt="">
+		                	<div style="font-weight: 800; font-size:12px; background-color: #ff000012; text-align: center;">${matchList.KILLS}/${matchList.DEATHS}/${matchList.ASSISTS}</div>
 		                </c:if>
         	        </div>
                 </c:forEach>

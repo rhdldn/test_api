@@ -41,7 +41,7 @@ public class LolApiController {
 	{
 		ModelAndView modelAndView = new ModelAndView("/ponylist");
 		
-		List<Object> retList = lolApiService.getPonyLolRank();
+		List<Map<String, Object>> retList = lolApiService.getPonyLolRank();
 		
 		modelAndView.addObject("ponyRankList", retList);
 		
@@ -64,7 +64,7 @@ public class LolApiController {
 	{
 		ModelAndView modelAndView = new ModelAndView("/enemylist");
 		
-		List<Object> retList = lolApiService.getEnemyLolRank();
+		List<Map<String, Object>> retList = lolApiService.getEnemyLolRank();
 		
 		modelAndView.addObject("enemyRankList", retList);
 		
@@ -92,6 +92,29 @@ public class LolApiController {
 		modelAndView.addObject("champList", retList);
 		
 		return modelAndView;
+	}
+	
+	/**
+	 * 
+	* <PRE>
+	* 간략 : 전적 검색
+	* 상세 : 전적 검색
+	* <PRE>
+	* @param paramMap
+	* @return 데이터 값
+	 * @throws Exception 
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getUserHs.do", method = RequestMethod.GET)
+	public ResponseEntity<String> getUserHs(@RequestParam("userId") String userId) throws Exception{
+	
+		HttpHeaders responseHeaders = new HttpHeaders();
+
+		responseHeaders.add("Content-Type", "text/html; charset=UTF-8");
+		
+		lolApiService.createUserHs(userId);
+		
+		return new ResponseEntity<>("", responseHeaders, HttpStatus.OK);
 	}
 	
 	/**

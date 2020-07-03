@@ -2,6 +2,7 @@ package com.jhkim.lolapi.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -44,12 +45,63 @@ public class LolApiService {
 	private static final String[] enemyIdAry = {"말롱꿀", "애승희", "부딪혀맞설뿐", "똘똘똘뜰똘뜰똘", "Hide on 6ush"};
 	
 	/**
+	 * 유저 전적 등록/갱신
+	 * @param parameters2 
+	 * @throws Exception 
+	 */
+	public void createUserHs(String userId) throws Exception {
+		
+		Gson gson = new Gson();
+			
+		String apiKey = lolApiMapper.selectApiKey();
+		Map<String, Object> paramMap = new HashMap();
+		paramMap.put("apikey", apiKey);
+			
+		ResponseEntity<String> userRsp = getLolUserInfo(userId, paramMap);
+		Map<String, Object> apiUserMap = gson.fromJson(userRsp.getBody(), Map.class);
+			
+		apiUserMap.put("userId", userId);
+		apiUserMap.put("userType", "");
+		if(lolApiMapper.updateUserInfo(apiUserMap) == 0){
+			lolApiMapper.insertUserInfo(apiUserMap);
+		}
+		List<Map<String, Object>> userList = lolApiMapper.selectUserList(apiUserMap);
+		
+		//전적 갱신
+		getRankInfo(userList);
+	}
+	
+	/**
 	 * 포니 랭크 정보 조회
 	 * @param parameters2 
 	 * @throws Exception 
 	 */
-	public List<Object> getPonyLolRank() throws Exception {
-		return getRankInfo("P");
+	public List<Map<String, Object>> getPonyLolRank() throws Exception {
+		
+		List<Map<String, Object>> userRankList = new ArrayList<>();
+		Map<String, Object> paramMap = new HashMap();
+		paramMap.put("userType", "PONY");
+		List<Map<String, Object>> ponyList = lolApiMapper.selectUserList(paramMap);
+		
+		for (Map<String, Object> map : ponyList) {
+			
+			Map<String, Object> userRankMap = new HashMap();
+			
+			map.put("userGameId", MapUtils.getString(map, "USER_GAME_ID", ""));
+			map.put("queueType", "RANKED_SOLO_5x5");
+			Map<String, Object> soloRankMap = lolApiMapper.selectRankInfo(map);
+			userRankMap.put("soloRankMap", soloRankMap);
+			
+			map.put("queueType", "RANKED_FLEX_SR");
+			Map<String, Object> freeRankMap = lolApiMapper.selectRankInfo(map);
+			userRankMap.put("freeRankMap", freeRankMap);
+			
+			List<Map<String, Object>> lastGameList = lolApiMapper.selectMatchList(map);
+			userRankMap.put("lastGameList", lastGameList);
+			
+			userRankList.add(userRankMap);
+		}
+		return userRankList;
 	}
 	
 	/**
@@ -57,8 +109,32 @@ public class LolApiService {
 	 * @param parameters2 
 	 * @throws Exception 
 	 */
-	public List<Object> getEnemyLolRank() throws Exception {
-		return getRankInfo("E");
+	public List<Map<String, Object>> getEnemyLolRank() throws Exception {
+		
+		List<Map<String, Object>> userRankList = new ArrayList<>();
+		Map<String, Object> paramMap = new HashMap();
+		paramMap.put("userType", "ENERMY");
+		List<Map<String, Object>> ponyList = lolApiMapper.selectUserList(paramMap);
+		
+		for (Map<String, Object> map : ponyList) {
+			
+			Map<String, Object> userRankMap = new HashMap();
+			
+			map.put("userGameId", MapUtils.getString(map, "USER_GAME_ID", ""));
+			map.put("queueType", "RANKED_SOLO_5x5");
+			Map<String, Object> soloRankMap = lolApiMapper.selectRankInfo(map);
+			userRankMap.put("soloRankMap", soloRankMap);
+			
+			map.put("queueType", "RANKED_FLEX_SR");
+			Map<String, Object> freeRankMap = lolApiMapper.selectRankInfo(map);
+			userRankMap.put("freeRankMap", freeRankMap);
+			
+			List<Map<String, Object>> lastGameList = lolApiMapper.selectMatchList(map);
+			userRankMap.put("lastGameList", lastGameList);
+			
+			userRankList.add(userRankMap);
+		}
+		return userRankList;
 	}
 	
 	/**
@@ -90,33 +166,25 @@ public class LolApiService {
 	
 	
 	/**
-	 * 포니 랭크 정보 조회
+	 * 랭크 정보 조회/갱신
 	 * @param parameters2 
 	 * @throws Exception 
 	 */
-	public List<Object> getRankInfo(String flag) throws Exception {
+	public void getRankInfo(List<Map<String, Object>> userList) throws Exception {
 		
-		List<Object> retList = new ArrayList<Object>();
 		Gson gson = new Gson();
 		Map<String, Object> parameters = new HashMap();
 		
 		try {
 			
-			for(int i=0; i<ponyIdAry.length; i++){
+			for(int i=0; i<userList.size(); i++){
 				
-				String[] ary = ponyIdAry;
-				
-			    //상대 조회
-				if(flag.equals("E")){
-					ary = enemyIdAry;
-				}
-				
-				String ponyId = ary[i];
-				log.debug("ponyId : {}", ponyId);
+				String userId = MapUtils.getString(userList.get(i), "USER_GAME_ID", "");
+				log.debug("gameId : {}", userId);
 				
 				String apiKey = lolApiMapper.selectApiKey();
 				parameters.put("apikey", apiKey);
-				ResponseEntity<String> userRsp = getLolUserInfo(ponyId, parameters);
+				ResponseEntity<String> userRsp = getLolUserInfo(userId, parameters);
 			
 				if(userRsp != null){
 				
@@ -132,23 +200,17 @@ public class LolApiService {
 					if(rankRsp != null){
 						
 						//솔로랭크, 자유랭크 재파싱
-						Map<String, Object> gameMap = parsingRankInfo(rankRsp.getBody());
-
-						//최근 10게임 매치정보 파싱
-						gameMap.put("summId", summId);
-						gameMap.put("lastGameList", getLstMatchInfo(accountId));
+						parsingRankInfo(rankRsp.getBody());
 						
-						retList.add(gameMap);
-						
-						log.info("소환사아이디 : {} 정보 적재 성공", ponyId);
+						//매치정보 파싱 적재
+						getLstMatchInfo(accountId, userId);
+						log.info("소환사아이디 : {} 정보 적재 성공", userId);
 					}
 				}
 			}
-			return retList;
 		} catch (Exception e) {
-			log.error("랭크 정보 조회 ERROR : {}", e.getMessage());
+			log.error("랭크 정보 조회/갱신 ERROR : {}", e.getMessage());
 		}
-		return retList;
 	}
 	
 	/**
@@ -168,31 +230,9 @@ public class LolApiService {
 		List<Map<String, Object>> retList = gson.fromJson(body, List.class);
 		
 		if(retList != null){
-			
 			for (Map<String, Object> map : retList) {
-				
-				String queueType = MapUtils.getString(map, "queueType", "");
-				
-				//솔로랭크
-				if(queueType.equals("RANKED_SOLO_5x5")){
-					rankMap.put("nm", MapUtils.getString(map, "summonerName", ""));
-					rankMap.put("soloRkTier", MapUtils.getString(map, "tier", ""));
-					rankMap.put("soloRkRank", MapUtils.getString(map, "rank", ""));
-					rankMap.put("soloRkPt", MapUtils.getInteger(map, "leaguePoints", 0));
-					rankMap.put("soloRkWins", MapUtils.getInteger(map, "wins", 0));
-					rankMap.put("soloRkLosses", MapUtils.getInteger(map, "losses", 0));
-					rankMap.put("soloRkImg", MapUtils.getString(map, "tier", "").toLowerCase());
-				}
-				
-				//자유랭크
-				else if(queueType.equals("RANKED_FLEX_SR")){
-					rankMap.put("nm", MapUtils.getString(map, "summonerName", ""));
-					rankMap.put("freeRkTier", MapUtils.getString(map, "tier", ""));
-					rankMap.put("freeRkRank", MapUtils.getString(map, "rank", ""));
-					rankMap.put("freeRkPt", MapUtils.getInteger(map, "leaguePoints", 0));
-					rankMap.put("freeRkWins", MapUtils.getInteger(map, "wins", 0));
-					rankMap.put("freeRkLosses", MapUtils.getInteger(map, "losses", 0));
-					rankMap.put("freeRkImg", MapUtils.getString(map, "tier", "").toLowerCase());
+				if(lolApiMapper.updateUserRank(map) == 0){
+					lolApiMapper.insertUserRank(map);
 				}
 			}
 		}
@@ -204,9 +244,8 @@ public class LolApiService {
 	 * @param parameters2 
 	 * @throws Exception 
 	 */
-	public List<Object> getLstMatchInfo(String accountId) throws Exception {
+	private void getLstMatchInfo(String accountId, String userId) throws Exception {
 		
-		List<Object> retList = new ArrayList<Object>();
 		Map<String, Object> parameters = new HashMap();
 		
 		try {
@@ -218,13 +257,11 @@ public class LolApiService {
 			if(matchRsp != null){
 						
 				//매치정보 재파싱
-				retList = parsingMatchInfo(matchRsp.getBody(), accountId, parameters);
+				parsingMatchInfo(matchRsp.getBody(), accountId, parameters, userId);
 			}
-			return retList;
 		} catch (Exception e) {
 			log.error("랭크 정보 조회 ERROR : {}", e.getMessage());
 		}
-		return retList;
 	}
 	
 	/**
@@ -237,9 +274,8 @@ public class LolApiService {
 	* @return
 	 * @throws Exception 
 	 */
-	private List<Object> parsingMatchInfo(String body, String accountId, Map<String, Object> parameters) throws Exception {
+	private void parsingMatchInfo(String body, String accountId, Map<String, Object> parameters, String userId) throws Exception {
 		
-		List<Object> retList = new ArrayList<Object>();
 		Gson gson = new Gson();
 		
 		Map<String, Object> retMap = gson.fromJson(body, Map.class);
@@ -249,44 +285,19 @@ public class LolApiService {
 			List<Map<String, Object>> matchList = (List<Map<String, Object>>) retMap.get("matches");
 			
 			for (Map<String, Object> map : matchList) {
-				
-				Map<String, Object> matchMap = new HashMap();
-				String champion = Integer.toString(MapUtils.getInteger(map, "champion", 0));
-				String role = MapUtils.getString(map, "role", "");
-				String lane = MapUtils.getString(map, "lane", "");
-				long gameId = MapUtils.getLongValue(map, "gameId", 0);
-				String positionImg = "support";
-				
-				if(role.equals("DUO_SUPPORT")){
-					positionImg = "support";
+
+				map.put("userId", userId);
+				map.put("gameId", Long.toString(MapUtils.getLongValue(map, "gameId", 0)));
+				map.put("timestamp", Long.toString(MapUtils.getLongValue(map, "timestamp", 0)));
+				if(lolApiMapper.updateUserMatch(map) == 0){
+					lolApiMapper.insertUserMatch(map);
 				}
-				else{
-					if(lane.equals("BOTTOM")){
-						positionImg = "ad";
-					}
-					else if(lane.equals("TOP")){
-						positionImg = "top";
-					}
-					else if(lane.equals("JUNGLE")){
-						positionImg = "jg";
-					}
-					else if(lane.equals("MID")){
-						positionImg = "mid";
-					}
-				}
-				matchMap.put("champNm", getChampMap(champion));
-				matchMap.put("positionImg", positionImg);
 				
 				//매치에 대한 KDA, 결과 조회
-				ResponseEntity<String> matchDtlRsp = getMatchDetailInfo(Long.toString(gameId), parameters);
-				Map<String, Object> matchDetailMap = parsingMatchDetail(matchDtlRsp.getBody(), accountId);
-				
-				matchMap.put("matchDtlMap", matchDetailMap);
-				
-				retList.add(matchMap);
+				ResponseEntity<String> matchDtlRsp = getMatchDetailInfo(Long.toString(MapUtils.getLongValue(map, "gameId", 0)), parameters);
+				parsingMatchDetail(matchDtlRsp.getBody(), accountId, userId);
 			}
 		}
-		return retList;
 	}
 	
 	/**
@@ -298,7 +309,7 @@ public class LolApiService {
 	* @param body
 	* @return
 	 */
-	private Map<String, Object> parsingMatchDetail(String body, String paramAccountId) {
+	private Map<String, Object> parsingMatchDetail(String body, String paramAccountId, String userId) {
 		
 		Map<String, Object> matchDtlMap = new HashMap();
 		Gson gson = new Gson();
@@ -333,10 +344,13 @@ public class LolApiService {
 				Map<String, Object> matchUserSts = (Map<String, Object>) map.get("stats");
 				
 				//KDA, 승패여부
+				matchDtlMap.put("userId", userId);
+				matchDtlMap.put("gameId", Long.toString(MapUtils.getLongValue(retMap, "gameId", 0)));
 				matchDtlMap.put("kills", MapUtils.getInteger(matchUserSts, "kills", 0));
 				matchDtlMap.put("deaths", MapUtils.getInteger(matchUserSts, "deaths", 0));
 				matchDtlMap.put("assists", MapUtils.getInteger(matchUserSts, "assists", 0));
 				matchDtlMap.put("winflag", MapUtils.getString(matchUserSts, "win", ""));
+				lolApiMapper.updateUserMatchDtl(matchDtlMap);
 			}
 		}
 		return matchDtlMap;
