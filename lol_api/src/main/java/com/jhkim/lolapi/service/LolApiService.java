@@ -76,11 +76,11 @@ public class LolApiService {
 	 * @param parameters2 
 	 * @throws Exception 
 	 */
-	public List<Map<String, Object>> getPonyLolRank() throws Exception {
+	public List<Map<String, Object>> getLolRank(String userType) throws Exception {
 		
 		List<Map<String, Object>> userRankList = new ArrayList<>();
 		Map<String, Object> paramMap = new HashMap();
-		paramMap.put("userType", "PONY");
+		paramMap.put("userType", userType);
 		List<Map<String, Object>> ponyList = lolApiMapper.selectUserList(paramMap);
 		
 		for (Map<String, Object> map : ponyList) {

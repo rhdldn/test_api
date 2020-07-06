@@ -68,6 +68,7 @@
             	<h4 class="card-title">
                   <a href="javascript:champClick('${list.soloRankMap.summId}');" style="font-size: 1.75rem;">${list.soloRankMap.USER_GAME_ID}</a>
                 </h4>
+                <button onclick="javascript:stsUpdClick('${list.soloRankMap.USER_GAME_ID}')">전적 갱신</button>
               <div class="card-body">
               	<div style="display: flex; text-align: center;"> 
                 <div style="font-size: 18px; font-weight: 900; width: 100%">솔로랭크</div>
@@ -158,6 +159,10 @@
 	function champClick(summId){
 		
 		location.href = "/lolapi/getChampList.do?summId="+ summId;
+	}
+	
+	function stsUpdClick(userId){
+		location.href = "/lolapi/getUserHs.do?userId="+ userId + "&userType=PONY";
 	}
 	
 </script>

@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>포니 랭크 조회 리스트</title>
+  <title>상대 랭크 조회 리스트</title>
 
   <!-- Bootstrap core CSS -->
   <link href="/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -62,12 +62,13 @@
 
         <div class="row" style="flex-wrap:inherit;">
 		
-		  <c:forEach var="list" varStatus="status" items="${ponyRankList}">
+		  <c:forEach var="list" varStatus="status" items="${enemyRankList}">
           <div class="col-lg-4 col-md-6 mb-4" style="margin-top: 1.5rem!important;">
             <div class="card h-100">
             	<h4 class="card-title">
                   <a href="javascript:champClick('${list.soloRankMap.summId}');" style="font-size: 1.75rem;">${list.soloRankMap.USER_GAME_ID}</a>
                 </h4>
+                <button onclick="javascript:stsUpdClick('${list.soloRankMap.USER_GAME_ID}')">전적 갱신</button>
               <div class="card-body">
               	<div style="display: flex; text-align: center;"> 
                 <div style="font-size: 18px; font-weight: 900; width: 100%">솔로랭크</div>
@@ -160,6 +161,9 @@
 		location.href = "/lolapi/getChampList.do?summId="+ summId;
 	}
 	
+	function stsUpdClick(userId){
+		location.href = "/lolapi/getUserHs.do?userId="+ userId + "&userType=ENERMY";
+	}
 	
 </script>
 </html>

@@ -1,6 +1,7 @@
 package com.jhkim.lolapi.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +42,7 @@ public class LolApiController {
 	{
 		ModelAndView modelAndView = new ModelAndView("/ponylist");
 		
-		List<Map<String, Object>> retList = lolApiService.getPonyLolRank();
+		List<Map<String, Object>> retList = lolApiService.getLolRank("PONY");
 		
 		modelAndView.addObject("ponyRankList", retList);
 		
@@ -64,7 +65,7 @@ public class LolApiController {
 	{
 		ModelAndView modelAndView = new ModelAndView("/enemylist");
 		
-		List<Map<String, Object>> retList = lolApiService.getEnemyLolRank();
+		List<Map<String, Object>> retList = lolApiService.getLolRank("ENERMY");
 		
 		modelAndView.addObject("enemyRankList", retList);
 		
@@ -106,15 +107,26 @@ public class LolApiController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getUserHs.do", method = RequestMethod.GET)
-	public ResponseEntity<String> getUserHs(@RequestParam("userId") String userId) throws Exception{
+	public ModelAndView getUserHs(@RequestParam("userId") String userId, @RequestParam("userType") String userType) throws Exception{
 	
-		HttpHeaders responseHeaders = new HttpHeaders();
-
-		responseHeaders.add("Content-Type", "text/html; charset=UTF-8");
+		String retUrl = "/ponylist";
+		String retListNm = "ponyRankList";
 		
 		lolApiService.createUserHs(userId);
 		
-		return new ResponseEntity<>("", responseHeaders, HttpStatus.OK);
+		if(userType.equals("ENERMY")){
+			retUrl = "/enemylist";
+			retListNm = "enemyRankList";
+			
+		}
+		
+		ModelAndView modelAndView = new ModelAndView(retUrl);
+		
+		List<Map<String, Object>> retList = lolApiService.getLolRank(userType);
+		
+		modelAndView.addObject(retListNm, retList);
+		
+		return modelAndView;
 	}
 	
 	/**
