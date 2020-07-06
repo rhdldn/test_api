@@ -30,6 +30,9 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" id="userLink" href="#">사용자 전적 검색</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" id="ponyLink" href="#">포니 랭크 리스트</a>
           </li>
@@ -156,6 +159,11 @@
 		
 		console.log('${json}');
 		console.log("탐");
+	});
+
+	$("#userLink").click(function(){
+		
+		location.href = "/lolapi/getUserList.do";
 	});
 	
 	$("#ponyLink").click(function(){

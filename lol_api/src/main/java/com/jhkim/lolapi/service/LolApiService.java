@@ -72,18 +72,21 @@ public class LolApiService {
 	}
 	
 	/**
-	 * 포니 랭크 정보 조회
+	 * 랭크 정보 조회
 	 * @param parameters2 
 	 * @throws Exception 
 	 */
-	public List<Map<String, Object>> getLolRank(String userType) throws Exception {
+	public List<Map<String, Object>> getLolRank(Map<String, Object> paramMap) throws Exception {
 		
 		List<Map<String, Object>> userRankList = new ArrayList<>();
-		Map<String, Object> paramMap = new HashMap();
-		paramMap.put("userType", userType);
-		List<Map<String, Object>> ponyList = lolApiMapper.selectUserList(paramMap);
+		List<Map<String, Object>> userList = lolApiMapper.selectUserList(paramMap);
 		
-		for (Map<String, Object> map : ponyList) {
+		//최초 등록
+		if(userList.isEmpty()){
+			createUserHs(MapUtils.getString(paramMap, "userId", ""));
+		}
+		
+		for (Map<String, Object> map : userList) {
 			
 			Map<String, Object> userRankMap = new HashMap();
 			

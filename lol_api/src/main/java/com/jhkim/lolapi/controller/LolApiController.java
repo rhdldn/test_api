@@ -2,6 +2,7 @@ package com.jhkim.lolapi.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.google.gson.Gson;
 import com.jhkim.lolapi.service.LolApiService;
+import com.alibaba.fastjson.JSON;
 
 @RestController
 @RequestMapping(path="/lolapi")
@@ -25,6 +26,48 @@ public class LolApiController {
 	
 	@Autowired
 	LolApiService lolApiService;
+	
+	/**
+	 * 
+	* <PRE>
+	* 간략 : 사용자 전적 검색
+	* 상세 : 사용자 전적 검색
+	* <PRE>
+	* @param paramMap
+	* @return 데이터 값
+	 * @throws Exception 
+	 */
+	@ResponseBody
+	@RequestMapping(path="/getUserList.do", produces="text/plain; charset=UTF-8")
+	public ModelAndView getUserList(@RequestParam Map<String, Object> paramMap) throws Exception
+	{
+		ModelAndView modelAndView = new ModelAndView("/userlist");
+		
+		return modelAndView;
+	}
+	
+	/**
+	 * 
+	* <PRE>
+	* 간략 : 사용자 전적 검색 (ajax)
+	* 상세 : 사용자 전적 검색 (ajax)
+	* <PRE>
+	* @param paramMap
+	* @return 데이터 값
+	 * @throws Exception 
+	 */
+	@ResponseBody
+	@RequestMapping(path="/getUserListProc.do", produces="text/plain; charset=UTF-8")
+	public ResponseEntity<String> getUserListProc(@RequestParam Map<String, Object> paramMap) throws Exception{
+
+		HttpHeaders responseHeaders = new HttpHeaders();
+
+		responseHeaders.add("Content-Type", "text/html; charset=UTF-8");
+		
+		List<Map<String, Object>> retList = lolApiService.getLolRank(paramMap);
+		
+		return new ResponseEntity<String>(JSON.toJSONString( retList ), HttpStatus.OK);
+	}
 	
 	/**
 	 * 
@@ -42,7 +85,8 @@ public class LolApiController {
 	{
 		ModelAndView modelAndView = new ModelAndView("/ponylist");
 		
-		List<Map<String, Object>> retList = lolApiService.getLolRank("PONY");
+		paramMap.put("userType", "PONY");
+		List<Map<String, Object>> retList = lolApiService.getLolRank(paramMap);
 		
 		modelAndView.addObject("ponyRankList", retList);
 		
@@ -65,7 +109,8 @@ public class LolApiController {
 	{
 		ModelAndView modelAndView = new ModelAndView("/enemylist");
 		
-		List<Map<String, Object>> retList = lolApiService.getLolRank("ENERMY");
+		paramMap.put("userType", "ENERMY");
+		List<Map<String, Object>> retList = lolApiService.getLolRank(paramMap);
 		
 		modelAndView.addObject("enemyRankList", retList);
 		
@@ -121,8 +166,10 @@ public class LolApiController {
 		}
 		
 		ModelAndView modelAndView = new ModelAndView(retUrl);
-		
-		List<Map<String, Object>> retList = lolApiService.getLolRank(userType);
+
+		Map<String, Object> paramMap = new HashMap();
+		paramMap.put("userType", userType);
+		List<Map<String, Object>> retList = lolApiService.getLolRank(paramMap);
 		
 		modelAndView.addObject(retListNm, retList);
 		
