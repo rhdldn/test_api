@@ -68,7 +68,19 @@
             	<h4 class="card-title">
                   <a href="javascript:champClick('${list.soloRankMap.summId}');" style="font-size: 1.75rem;">${list.soloRankMap.USER_GAME_ID}</a>
                 </h4>
-                <button onclick="javascript:stsUpdClick('${list.soloRankMap.USER_GAME_ID}')">전적 갱신</button>
+                <button onclick="javascript:stsUpdClick('${list.soloRankMap.USER_GAME_ID}')">전적 갱신
+                <c:if test="${list.soloRankMap.DIFF_DAY > 0}">
+                ${list.soloRankMap.DIFF_DAY}일전
+                </c:if> 
+                <c:if test="${list.soloRankMap.DIFF_DAY == 0}">
+					<c:if test="${list.soloRankMap.DIFF_HOUR == 0}">
+						${list.soloRankMap.DIFF_MIN}분전
+					</c:if>
+					<c:if test="${list.soloRankMap.DIFF_HOUR > 0}">
+					${list.soloRankMap.DIFF_HOUR}시간전
+					</c:if>
+                </c:if>
+                </button>
               <div class="card-body">
               	<div style="display: flex; text-align: center;"> 
                 <div style="font-size: 18px; font-weight: 900; width: 100%">솔로랭크</div>
