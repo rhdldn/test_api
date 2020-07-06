@@ -43,30 +43,11 @@ public class LolApiController {
 	{
 		ModelAndView modelAndView = new ModelAndView("/userlist");
 		
-		return modelAndView;
-	}
-	
-	/**
-	 * 
-	* <PRE>
-	* 간략 : 사용자 전적 검색 (ajax)
-	* 상세 : 사용자 전적 검색 (ajax)
-	* <PRE>
-	* @param paramMap
-	* @return 데이터 값
-	 * @throws Exception 
-	 */
-	@ResponseBody
-	@RequestMapping(path="/getUserListProc.do", produces="text/plain; charset=UTF-8")
-	public ResponseEntity<String> getUserListProc(@RequestParam Map<String, Object> paramMap) throws Exception{
-
-		HttpHeaders responseHeaders = new HttpHeaders();
-
-		responseHeaders.add("Content-Type", "text/html; charset=UTF-8");
-		
 		List<Map<String, Object>> retList = lolApiService.getLolRank(paramMap);
 		
-		return new ResponseEntity<String>(JSON.toJSONString( retList ), HttpStatus.OK);
+		modelAndView.addObject("userList", retList);
+		
+		return modelAndView;
 	}
 	
 	/**
