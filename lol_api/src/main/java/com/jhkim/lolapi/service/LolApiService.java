@@ -84,11 +84,13 @@ public class LolApiService {
 		//최초 등록
 		if(userList.isEmpty()){
 			createUserHs(MapUtils.getString(paramMap, "userId", ""));
+			userList = lolApiMapper.selectUserList(paramMap);
 		}
 		
 		for (Map<String, Object> map : userList) {
 			
 			Map<String, Object> userRankMap = new HashMap();
+			userRankMap.put("userMap", map);
 			
 			map.put("userGameId", MapUtils.getString(map, "USER_GAME_ID", ""));
 			map.put("queueType", "RANKED_SOLO_5x5");

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,10 @@ public class LolApiController {
 	public ModelAndView getUserList(@RequestParam Map<String, Object> paramMap) throws Exception
 	{
 		ModelAndView modelAndView = new ModelAndView("/userlist");
+		
+		if(MapUtils.getString(paramMap, "userId", "").equals("")){
+			return modelAndView;
+		}
 		
 		List<Map<String, Object>> retList = lolApiService.getLolRank(paramMap);
 		

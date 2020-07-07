@@ -69,7 +69,7 @@
           <div class="col-lg-4 col-md-6 mb-4" style="margin-top: 1.5rem!important;">
             <div class="card h-100">
             	<h4 class="card-title">
-                  <a href="javascript:champClick('${list.soloRankMap.summId}');" style="font-size: 1.75rem;">${list.soloRankMap.USER_GAME_ID}</a>
+                  <a href="javascript:champClick('${list.userMap.EUC_ID}');" style="font-size: 1.75rem;">${list.soloRankMap.USER_GAME_ID}</a>
                 </h4>
                 <button onclick="javascript:stsUpdClick('${list.soloRankMap.USER_GAME_ID}')">전적 갱신
                 <c:if test="${list.soloRankMap.DIFF_DAY > 0}">

@@ -72,7 +72,7 @@
           <div id="userArea" class="col-lg-4 col-md-6 mb-4" style="margin-top: 1.5rem!important;">
             <div class="card h-100">
             	<h4 class="card-title">
-                  <a href="javascript:champClick('${list.soloRankMap.summId}');" style="font-size: 1.75rem;">${list.soloRankMap.USER_GAME_ID}</a>
+                  <a href="javascript:champClick('${list.userMap.EUC_ID}');" style="font-size: 1.75rem;">${list.soloRankMap.USER_GAME_ID}</a>
                 </h4>
                 <button onclick="javascript:stsUpdClick('${list.soloRankMap.USER_GAME_ID}')">전적 갱신
                 <c:if test="${list.soloRankMap.DIFF_DAY > 0}">
@@ -93,8 +93,22 @@
                 <div style="font-size: 18px; font-weight: 900; width: 100%">자유랭크</div>
                 </div>
                 <div style="display: flex;">
-                <a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.soloRankMap.TIER_IMG}.png" alt=""></a>
-                <a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.freeRankMap.TIER_IMG}.png" alt=""></a>
+                <c:choose>
+                <c:when test="${list.soloRankMap.TIER_IMG ne null}">
+                	<a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.soloRankMap.TIER_IMG}.png" alt=""></a>
+                </c:when>
+                <c:otherwise>
+                	<a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/none.png" alt=""></a>
+                </c:otherwise>
+                </c:choose>
+                <c:choose>
+                <c:when test="${list.freeRankMap.TIER_IMG ne null}">
+                	<a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.freeRankMap.TIER_IMG}.png" alt=""></a>
+                </c:when>
+                <c:otherwise>
+                <a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/none.png" alt=""></a>
+                </c:otherwise>
+                </c:choose>
                 </div>
                 <div style="display: flex; font-size: 19px; font-weight:800; text-align: center;">
                 <div style="width: 100%">${list.soloRankMap.TIER } ${list.soloRankMap.RANK_LVL }</div>
