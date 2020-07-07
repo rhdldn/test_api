@@ -90,8 +90,22 @@
                 <div style="font-size: 18px; font-weight: 900; width: 100%">자유랭크</div>
                 </div>
                 <div style="display: flex;">
-                <a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.soloRankMap.TIER_IMG}.png" alt=""></a>
-                <a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.freeRankMap.TIER_IMG}.png" alt=""></a>
+                <c:choose>
+                <c:when test="${list.soloRankMap.TIER_IMG ne null}">
+                	<a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.soloRankMap.TIER_IMG}.png" alt=""></a>
+                </c:when>
+                <c:otherwise>
+                	<a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/none.png" alt=""></a>
+                </c:otherwise>
+                </c:choose>
+                <c:choose>
+                <c:when test="${list.freeRankMap.TIER_IMG ne null}">
+                	<a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/${list.freeRankMap.TIER_IMG}.png" alt=""></a>
+                </c:when>
+                <c:otherwise>
+                <a href="#"><img class="card-img-top" style="height:100%; width: 100%" src="/resources/img/none.png" alt=""></a>
+                </c:otherwise>
+                </c:choose>
                 </div>
                 <div style="display: flex; font-size: 19px; font-weight:800; text-align: center;">
                 <div style="width: 100%">${list.soloRankMap.TIER } ${list.soloRankMap.RANK_LVL }</div>

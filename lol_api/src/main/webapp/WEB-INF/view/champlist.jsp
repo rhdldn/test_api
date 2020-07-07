@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>포니 랭크 조회 리스트</title>
+  <title>챔피언 숙련도 리스트</title>
 
   <!-- Bootstrap core CSS -->
   <link href="/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -30,7 +30,10 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item active">
+          <li class="nav-item">
+            <a class="nav-link" id="userLink" href="#">사용자 전적 검색</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" id="ponyLink" href="#">포니 랭크 리스트</a>
           </li>
           <li class="nav-item">
@@ -113,6 +116,11 @@
 		console.log("탐");
 	});
 	
+	$("#userLink").click(function(){
+		
+		location.href = "/lolapi/getUserList.do";
+	});
+	
 	$("#ponyLink").click(function(){
 		
 		location.href = "/lolapi/getPonyList.do";
@@ -122,11 +130,6 @@
 		
 		location.href = "/lolapi/getEnemyList.do";
 	});
-	
-	function champClick(summId){
-		
-		location.href = "/lolapi/getChampList.do?summId="+ summId;
-	}
 	
 </script>
 </html>
